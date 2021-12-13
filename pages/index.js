@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Nav from "../components/Nav";
 import Results from "../components/Results";
 import requests from "../utils/requests";
+import axios from "axios";
 
 export default function Home({ results }) {
   return (
@@ -21,20 +22,19 @@ export default function Home({ results }) {
 
 export async function getServerSideProps(context) {
   const genre = context.query.genre;
-
   try {
-    const request = await fetch(
+    const request = await axios.get(
       `https://api.themoviedb.org/3${
-        requests[genre]?.url || requests.fetchTrending.url
+        requests[genre]?.url || requests?.fetchTrending.url
       }`
-    ).then((res) => res.json());
-
+    );
     return {
       props: {
-        results: request?.results,
+        results: request.data.results,
       },
     };
   } catch (error) {
+    console.log(error);
     return {
       props: {
         results: [],
